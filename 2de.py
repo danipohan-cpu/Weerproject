@@ -3,7 +3,12 @@ import requests
 bestand = open( "inputfile", 'r')
 bestand2 = open("outputfile",'a')
 
-def auto_bereken(bestand,bestand2 ):
+def auto_bereken(bestand, ):
+    bestand2 = open("outputfile", 'w')
+    bestand2.write ('')
+    bestand2.close
+    bestand2 = open("outputfile",'a')
+    bestand.seek(0)
     next(bestand)
     for regel in bestand:
         dataperdag = regel.split()
@@ -23,9 +28,8 @@ def auto_bereken(bestand,bestand2 ):
             bewatering = True
         elif int(dataperdag[4]) >= 3:
             bewatering = False
-        bestand2.write(
-            f"{datum};{CVstand};{ventilatiestand};{bewatering}\n"
-        )
+        bestand2.write(f"{datum};{CVstand};{ventilatiestand};{bewatering}\n")
+    bestand2.flush()
 bestand.close
 
 def aantal_dagen():
@@ -78,12 +82,7 @@ def override_settings():
 def weerinhuizen():
     url = "https://api.open-meteo.com/v1/forecast"
 
-    params = {
-        "latitude": 52.2992,
-        "longitude": 5.2418,
-        "current": "temperature_2m",
-        "timezone": "Europe/Amsterdam"
-    }
+    params = {"latitude": 52.2992,"longitude": 5.2418,"current": "temperature_2m","timezone": "Europe/Amsterdam"}
 
     response = requests.get(url, params=params, timeout=10)
     response.raise_for_status()
@@ -98,13 +97,28 @@ def weervandeweek():
     for dag in dagen:
         try:
             print('het is dag ' + (dag))
-            temperatuurC = float(input('wat is de temperatuur in graden celcius?'))
-            windsnelheid = float(input('wat is de windsnelheid in M/S?'))
-            luchtvochtigheid = float(input('wat is de luchtvochtigheid in %?'))
-        except:
+            temperatuurC_invoer = input('wat is de temperatuur in graden celcius?')
+            if temperatuurC_invoer == '':
+                break
+            windsnelheid_invoer = input('wat is de windsnelheid in M/S?')
+            if windsnelheid_invoer == '':
+                break
+            luchtvochtigheid_invoer = input('wat is de luchtvochtigheid in %?')
+
+        except ValueError:
             print ('dit is geen geldige waarde')
 
-        totaal_temp += temperatuurC
+        if temperatuurC_invoer == '' or windsnelheid_invoer == '' or luchtvochtigheid_invoer == '':
+            break
+
+        try:
+            temperatuurC = float(temperatuurC_invoer)
+            windsnelheid = float(windsnelheid_invoer)
+            luchtvochtigheid = float(luchtvochtigheid_invoer)
+        except ValueError:
+            print('Dit is geen geldige waarde')
+
+        totaal_temp += float(temperatuurC)
         farenheit = ((temperatuurC) * 1.8) + 32
         print('de afgelopen dagen is het gemideld, ' + str(totaal_temp / int(dag)))
 
@@ -129,7 +143,10 @@ def weervandeweek():
         print('=======================================================================================')
         print('')
 
+
+
 while True:
+    print('=======================================================================================')
     optie = (input("""welke optie wilt u?
     typ 1 voor het aantal dagen in het systeem te zien.
     typ 2 Automatisch alle actuatoren berekenen en naar uitvoerbestand schrijven
@@ -142,7 +159,7 @@ while True:
         hetaantaldagen = aantal_dagen()
         print (f"het aantal dagen is {hetaantaldagen}")
     elif optie == '2':
-        auto_bereken(bestand,bestand2)
+        auto_bereken(bestand,)
     elif optie == '3':
         resultaat = override_settings()
         if resultaat == 0:
