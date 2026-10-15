@@ -7,27 +7,30 @@ def weervandeweek():
             temperatuurC_invoer = input('wat is de temperatuur in graden celcius?')
             if temperatuurC_invoer == '':
                 break
-            windsnelheid_invoer = input('wat is de windsnelheid in M/S?')
-            if windsnelheid_invoer == '':
-                break
-            luchtvochtigheid_invoer = input('wat is de luchtvochtigheid in %?')
-
         except ValueError:
             print ('dit is geen geldige waarde')
-
-        if temperatuurC_invoer == '' or windsnelheid_invoer == '' or luchtvochtigheid_invoer == '':
-            break
-
         try:
             temperatuurC = float(temperatuurC_invoer)
         except ValueError:
             print('Dit is geen geldige waarde')
             break
         try:
+            windsnelheid_invoer = input('wat is de windsnelheid in M/S?')
+            if windsnelheid_invoer == '':
+                break
+        except ValueError:
+            print ('dit is geen geldige waarde')
+        try:
             windsnelheid = float(windsnelheid_invoer)
         except ValueError:
             print('Dit is geen geldige waarde')
             break
+        try:
+            luchtvochtigheid_invoer = input('wat is de luchtvochtigheid in %?')
+            if luchtvochtigheid_invoer == '':
+                break
+        except ValueError:
+            print ('dit is geen geldige waarde')
         try:
             luchtvochtigheid = float(luchtvochtigheid_invoer)
         except ValueError:
