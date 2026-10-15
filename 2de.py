@@ -1,5 +1,5 @@
-import requests
 import main
+import API
 
 bestand = open( "inputfile", 'r')
 bestand2 = open("outputfile",'a')
@@ -22,7 +22,7 @@ def auto_bereken(bestand, ):
         elif tempverschil < 10:
             CVstand = 0
         aantalpersonen = int(dataperdag[1])
-        (ventilatiestand) = int(aantalpersonen)+1
+        ventilatiestand = int(aantalpersonen)+1
         if (ventilatiestand) > 4:
             ventilatiestand = 4
         if int(dataperdag[4]) < 3:
@@ -80,18 +80,6 @@ def override_settings():
     eindresultaat = 0
     return eindresultaat
 
-def weerinhuizen():
-    url = "https://api.open-meteo.com/v1/forecast"
-
-    params = {"latitude": 52.2992,"longitude": 5.2418,"current": "temperature_2m","timezone": "Europe/Amsterdam"}
-
-    response = requests.get(url, params=params, timeout=10)
-    response.raise_for_status()
-
-    data = response.json()
-    temperatuur = data["current"]["temperature_2m"]
-    return temperatuur
-
 while True:
     print('=======================================================================================')
     optie = (input("""welke optie wilt u?
@@ -116,7 +104,7 @@ while True:
         elif resultaat == -3:
             print("Ongeldige keuze.")
     elif optie == '4':
-        temperatuur = weerinhuizen()
+        temperatuur = API.weerinhuizen()
         print(f"De temperatuur in Huizen is {temperatuur} °C")
     elif optie == '5':
         main.weervandeweek()
